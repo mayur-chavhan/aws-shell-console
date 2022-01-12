@@ -139,9 +139,16 @@ function stop_EC2_Instance() {
     if [[ $REPLY =~ ^[Yy]$ ]]; then
         your_InstanceInfo
         printf "\n"
-        read -p "['✅'] Enter AWS EC2 INSTANCE ID   : " instance_id
-        check_instance_id "${instance_id}"
-        check_instance_status "${instance_id}"
+        read -p "['✅'] Enter AWS EC2 INSTANCE IidentifierD   : " instance_id
+        read -p "['❗'] Do you want to stop an instance ${instance_id}? (y/n)  : " -n 1 -r
+        printf "\n"
+        if [[ $REPLY =~ ^[Yy]$ ]]; then
+            printf "\n['⌛'] Please wait while instance is stopping...\n"
+            aws ec2 start-instances --instance-ids ${instance_id} >>/dev/null
+            check_instance_status "${instance_id}"
+            wait
+        fi
+
     fi
 }
 
